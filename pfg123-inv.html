@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Google Sheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Inter font and overall body */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        /* Ensure the iframe is responsive */
+        iframe {
+            width: 100%;
+            height: 600px; /* Default height, can be adjusted */
+            border: none;
+            border-radius: 0.75rem; /* Rounded corners */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="flex flex-col items-center justify-center p-6 bg-white rounded-xl shadow-lg max-w-2xl w-full mx-4 sm:mx-auto">
+        <div id="password-section" class="w-full text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Access Protected Content</h1>
+            <p class="text-gray-600 mb-4">Please enter the password to view the Google Sheet.</p>
+            <input
+                type="password"
+                id="password-input"
+                placeholder="Enter password"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4 text-gray-800"
+            />
+            <button
+                id="submit-button"
+                class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out shadow-md"
+            >
+                Submit
+            </button>
+            <p id="error-message" class="text-red-600 mt-4 hidden">Incorrect password. Please try again.</p>
+        </div>
+
+        <div id="sheet-section" class="w-full hidden mt-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Embedded Google Sheet</h2>
+            <!--
+                IMPORTANT: Replace 'YOUR_GOOGLE_SHEET_EMBED_URL_HERE' with the actual embed URL from your Google Sheet.
+                To get the embed URL:
+                1. Open your Google Sheet.
+                2. Go to File > Share > Publish to web.
+                3. Select 'Embed' tab.
+                4. Choose the sheet and format you want.
+                5. Copy the 'src' attribute value from the iframe code provided.
+                Example URL format: https://docs.google.com/spreadsheets/d/e/2PACX-1vR.../pubhtml?widget=true&headers=false
+            -->
+            <iframe
+                src=<iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQi1LW4SWh9B_0rvGqxcUeqXuctdxAEZx_I31QgGrL6uMT2wS0idLSFWdLrwphMINanbx6B-97AqSmc/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+                allowfullscreen
+                loading="lazy"
+            ></iframe>
+            <p class="text-sm text-gray-500 mt-4 text-center">
+                This content is embedded directly from Google Sheets.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Get references to DOM elements
+        const passwordInput = document.getElementById('password-input');
+        const submitButton = document.getElementById('submit-button');
+        const errorMessage = document.getElementById('error-message');
+        const passwordSection = document.getElementById('password-section');
+        const sheetSection = document.getElementById('sheet-section');
+
+        // Define the correct password
+        // IMPORTANT: For better security, consider fetching this from a server-side API
+        // or using a more robust authentication method. This is client-side only.
+        const CORRECT_PASSWORD = 'Proforma-Inventory'; // <--- CHANGE THIS TO YOUR DESIRED PASSWORD
+
+        // Function to check the password
+        function checkPassword() {
+            const enteredPassword = passwordInput.value;
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // If password is correct, hide password section and show sheet section
+                passwordSection.classList.add('hidden');
+                sheetSection.classList.remove('hidden');
+                errorMessage.classList.add('hidden'); // Hide any previous error messages
+            } else {
+                // If password is incorrect, show error message
+                errorMessage.classList.remove('hidden');
+                passwordInput.value = ''; // Clear the input field
+                passwordInput.focus(); // Focus back on the input for easy re-entry
+            }
+        }
+
+        // Add event listener for the submit button click
+        submitButton.addEventListener('click', checkPassword);
+
+        // Add event listener for 'Enter' key press on the password input
+        passwordInput.addEventListener('keypress', function(event) {
+            // Check if the pressed key is 'Enter' (key code 13)
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html>
